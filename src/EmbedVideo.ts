@@ -11,7 +11,7 @@ export function embedVideoHTML(type: string, id: string, options: IEmbedVideoOpt
     const videoId: IVideoId = readVideoId(type, id);
 
     const videoService = getVideoService(videoId.service, options);
-    const url = createUrl(videoId.id, videoService, options);
+    const url = createUrl(id, videoService, options);
     let iframe = createIframe(url, videoService, options);
     return iframe;
 
@@ -45,13 +45,13 @@ function readVideoId(type: string, id: string): IVideoId {
   }
 }
 
-function createUrl(videoId: string, videoService:IVideoService, options: IEmbedVideoOptions): string {
-
-  const videoUrl = videoService.embedUrl(videoId);
+function createUrl(id: string, videoService:IVideoService, options: IEmbedVideoOptions): string {
+  const videoId: IVideoId = readVideoId(videoService.id, id);
+  const videoUrl = videoService.embedUrl(videoId.id);
   let url = new URL(videoUrl);
 
   if (videoService.urlProcessing) {
-    url = videoService.urlProcessing(videoId, url, options);
+    url = videoService.urlProcessing(id, url, options);
   }
 
   return url.toString();
@@ -76,4 +76,3 @@ function createIframe(url: string, videoService:IVideoService, options: IEmbedVi
 
   return iframeNode;
 }
-
